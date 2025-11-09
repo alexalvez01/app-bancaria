@@ -15,8 +15,28 @@ export const orchestrateTransaction = (transactionId, transaction) => {
   };
 
   sendEvent("TransactionInitiated", transaction);
-  setTimeout(() => sendEvent("FundsReserved", { ok: true, holdId: "H123", amount: transaction.amount }), 1000);
-  setTimeout(() => sendEvent("FraudChecked", { risk: "LOW" }), 2000);
-  setTimeout(() => sendEvent("Committed", { ledgerTxId: `TXN-${transactionId}` }), 3000);
-  setTimeout(() => sendEvent("Notified", { channels: ["email"] }), 4000);
-};
+   setTimeout(() => {
+    sendEvent("FundsReserved", { ok: true, holdId: "H123", amount: transaction.amount });
+
+    setTimeout(() => {
+      const risk = Math.random() < 0.7 ? "LOW" : "HIGH";
+
+      sendEvent("FraudChecked", { risk });
+
+      if (risk === "LOW") {
+        setTimeout(() => {
+          sendEvent("Committed", { ledgerTxId: `TXN-${transactionId}` });
+          setTimeout(() => {
+            sendEvent("Notified", { channels: ["email"] });
+          }, 1000);
+        }, 1000);
+      } else {
+        setTimeout(() => {
+          sendEvent("Reversed", { reason: "High risk detected" });
+        }, 1000);
+      }
+
+    }, 1000);
+
+  }, 1000);
+}

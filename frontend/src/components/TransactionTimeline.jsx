@@ -9,6 +9,8 @@ export default function TransactionTimeline({ events }) {
         return "border-blue-500 text-blue-400";
       case "Notified":
         return "border-purple-500 text-purple-400";
+      case "Reversed":
+        return "border-red-500 text-red-400";
       default:
         return "border-gray-500 text-gray-300";
     }

@@ -9,24 +9,26 @@ export default function App() {
   const [userId, setUserId] = useState(null);
   const [events, setEvents] = useState([]);
 
-  const handleStart = async (form) => {
-    setUserId(form.userId);
+const handleStart = async (form) => {
+    setTransactionId(null);
     setEvents([]);
-
-    
-    await connectWebSocket((event) => {
-      setEvents((prev) => [...prev, event]);
-    }, form.userId);
+    setUserId(form.userId);
 
    
-    const result = await startTransaction(form);
-    setTransactionId(result.transactionId);
-  };
+    await connectWebSocket((event) => {
+    if (event.userId === form.userId) {
+      setEvents((prev) => [...prev, event]);
+    }
+    }, form.userId);
 
+
+  const result = await startTransaction(form);
+  setTransactionId(result.transactionId);
+};
   return (
     <div className="min-h-screen bg-gray-900 text-gray-100 flex flex-col">
       <header className="p-4 text-2xl font-bold text-center bg-gray-800 border-b border-gray-700">
-        💳 Simulador de Transacciones Bancarias
+      Simulador de Transacciones Bancarias
       </header>
 
       <main className="flex flex-1 p-6 gap-6">
@@ -46,7 +48,7 @@ export default function App() {
             </>
           ) : (
             <p className="text-gray-400 text-center mt-20">
-              Iniciá una transacción para ver los eventos en tiempo real 🚀
+              Iniciá una transacción para ver los eventos en tiempo real
             </p>
           )}
         </div>

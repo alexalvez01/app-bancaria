@@ -12,9 +12,25 @@ export const setupWebSocket = (server) => {
     ws.on("message", (msg) => {
       try {
         const data = JSON.parse(msg);
+
         if (data.type === "auth") {
           ws.userId = data.userId;
           console.log(`Cliente autenticado como ${ws.userId}`);
+
+          // 🔹 Cerrar conexiones anteriores del mismo userId
+          clients.forEach((client) => {
+            if (
+              client !== ws &&
+              client.userId === ws.userId &&
+              client.readyState === ws.OPEN
+            ) {
+              console.log("Cerrando conexión anterior de:", ws.userId);
+              client.close();
+            }
+          });
+
+          // 🔹 Enviar confirmación opcional
+          ws.send(JSON.stringify({ type: "auth_ack", userId: ws.userId }));
         }
       } catch (err) {
         console.error("Error al procesar mensaje WebSocket:", err);
@@ -30,7 +46,7 @@ export const setupWebSocket = (server) => {
   });
 };
 
-
+// ✅ Función global para enviar eventos solo al usuario autenticado
 export const broadcastEvent = (event, userId) => {
   const json = JSON.stringify(event);
   clients.forEach((client) => {
