@@ -29,7 +29,6 @@ export const setupWebSocket = (server) => {
             }
           });
 
-          // 🔹 Enviar confirmación opcional
           ws.send(JSON.stringify({ type: "auth_ack", userId: ws.userId }));
         }
       } catch (err) {
