@@ -17,7 +17,7 @@ export const setupWebSocket = (server) => {
           ws.userId = data.userId;
           console.log(`Cliente autenticado como ${ws.userId}`);
 
-          // 🔹 Cerrar conexiones anteriores del mismo userId
+          
           clients.forEach((client) => {
             if (
               client !== ws &&
@@ -46,7 +46,7 @@ export const setupWebSocket = (server) => {
   });
 };
 
-// ✅ Función global para enviar eventos solo al usuario autenticado
+
 export const broadcastEvent = (event, userId) => {
   const json = JSON.stringify(event);
   clients.forEach((client) => {

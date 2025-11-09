@@ -1,7 +1,7 @@
 let socket = null;
 
 export const connectWebSocket = (onMessage, userId) => {
-  // Cerrar socket anterior
+  
   if (socket) {
     console.log("Cerrando conexión WebSocket anterior...");
     socket.onmessage = null;
@@ -10,7 +10,7 @@ export const connectWebSocket = (onMessage, userId) => {
     socket = null;
   }
 
-  // Devolvemos una Promesa que se resuelve cuando llega el auth_ack
+
   return new Promise((resolve) => {
     socket = new WebSocket("ws://localhost:3000");
 
@@ -26,10 +26,10 @@ export const connectWebSocket = (onMessage, userId) => {
     socket.onmessage = (event) => {
       const data = JSON.parse(event.data);
 
-      // 🔹 Ignorar el mensaje técnico de autenticación en el timeline
+      
       if (data.type === "auth_ack") {
         console.log("Autenticación confirmada:", data.userId);
-        resolve(); // 👈 se resuelve la Promesa recién ahora
+        resolve(); 
         return;
       }
 
